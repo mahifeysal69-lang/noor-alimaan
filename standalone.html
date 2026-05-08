@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Noor Al Imaan | معلومات登记中心</title>
+    <!-- Font Awesome 6 (Free CDN) for icons and visual clarity -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Font: Modern Arabic + Latin legible fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e9f0f5 0%, #d9e2ec 100%);
+            font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
+            padding: 2rem 1.5rem;
+            color: #1e2a3e;
+        }
+
+        /* main container card */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* Header with three zones: left NOOR, center logo, right NOOR + arabic */
+        .header {
+            background: #0b2b26;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255,215,150,0.08) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 4px solid #cbb26a;
+        }
+
+        .header-left, .header-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left {
+            justify-content: flex-start;
+        }
+
+        .header-right {
+            justify-content: flex-end;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .noor-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #F9E2A1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            backdrop-filter: blur(2px);
+        }
+
+        .arabic-noor {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #FDEEB3;
+            background: rgba(0,0,0,0.2);
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+        }
+
+        /* Logo centered circle */
+        .logo-circle {
+            background: #ffefcf;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,240,0.8);
+            border: 2px solid #e9c468;
+            margin: 0 1rem;
+        }
+        .logo-circle i {
+            font-size: 2.8rem;
+            color: #b87c2e;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .logo-circle img.error {
+            display: none;
+        }
+        .logo-circle img.error + i {
+            display: block;
+        }
+
+        /* Two column layout (top half info fields: left afan oromo/amharic, right english/amharic) */
+        .info-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem 2rem 1rem 2rem;
+            background: #fefcf7;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .left-col, .right-col {
+            flex: 1;
+            min-width: 260px;
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #ece9e0;
+        }
+
+        .section-subtitle {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #7c5e2c;
+            margin-bottom: 1rem;
+            border-left: 4px solid #cbb26a;
+            padding-left: 0.75rem;
+        }
+
+        .field-group {
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2c3e3b;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .lang-badge {
+            font-size: 0.7rem;
+            background: #f1efe7;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            color: #5a4a2a;
+            font-weight: normal;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid #ddd6c8;
+            background: #fffbf5;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #cbb26a;
+            box-shadow: 0 0 0 3px rgba(203,178,106,0.2);
+        }
+
+        /* Section Header (Haala Hirmaannaa) */
+        .participation-header {
+            background: #f3eee2;
+            margin: 0.5rem 2rem 0 2rem;
+            border-radius: 1.5rem;
+            padding: 0.9rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            border-left: 6px solid #b68b40;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c4b42;
+        }
+        .section-title small {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #5e6e5c;
+            margin-left: 12px;
+        }
+
+        /* Checkbox bottom half (grid) */
+        .checkbox-section {
+            padding: 1.5rem 2rem 2.5rem 2rem;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        .checkbox-card {
+            background: #fdfaf4;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #e7dfce;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .checkbox-card:hover {
+            background: #fff7ea;
+            border-color: #cbb26a;
+            transform: translateY(-2px);
+        }
+        .checkbox-card input {
+            width: 22px;
+            height: 22px;
+            accent-color: #b68b40;
+            margin: 0;
+            flex-shrink: 0;
+        }
+        .checkbox-card label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #2e3b32;
+            cursor: pointer;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: baseline;
+        }
+        .checkbox-card .trans-hint {
+            font-weight: 400;
+            font-size: 0.8rem;
+            color: #7b6b4a;
+            background: #ece5d8;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+        }
+
+        /* action buttons */
+        .action-buttons {
+            padding: 1rem 2rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            border-top: 1px solid #ece3d4;
+            background: #fffcf5;
+        }
+        button {
+            border: none;
+            padding: 0.8rem 1.8rem;
+            font-weight: 600;
+            border-radius: 2rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: #f2e5d2;
+            color: #3b3a2a;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        button.primary {
+            background: #2c5a4f;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button.primary:hover {
+            background: #1f423a;
+            transform: scale(0.98);
+        }
+        button:hover {
+            background: #e5d8c2;
+        }
+        .output-area {
+            background: #faf7f0;
+            margin: 0 2rem 2rem 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1.2rem;
+            font-size: 0.9rem;
+            border: 1px solid #e9dfcd;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #2d3e3a;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        @media (max-width: 780px) {
+            body { padding: 1rem; }
+            .header-left, .header-right { justify-content: center; margin: 0.3rem 0; }
+            .logo-circle { width: 55px; height: 55px; }
+            .noor-title { font-size: 1.2rem; }
+            .participation-header { margin: 0 1rem; }
+            .info-grid { padding: 1.5rem; }
+            .checkbox-section { padding: 1rem 1.5rem; }
+        }
+        hr {
+            margin: 0 2rem;
+            border-color: #e9dfce;
+        }
+        .inline-hint {
+            font-size: 0.7rem;
+            color: #80755a;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #8f7e5e;
+            padding: 1rem;
+            border-top: 1px solid #eee5d8;
+        }
+            </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- HEADER with three key elements: top left NOOR, center logo, top right NOOR + Arabic -->
+    <div class="header">
+        <div class="header-left">
+            <span class="noor-title"><i class="fas fa-star-of-life" style="font-size: 1rem;"></i> NOOR AL IMAAN</span>
+        </div>
+        <div class="logo-circle">
+            <img src="./public/noor%20al%20imaan.png" alt="Noor Al Imaan Logo" onerror="this.className='error';" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">
+            <i class="fas fa-circle-notch" style="display: none;"></i>
+        </div>
+        <div class="header-right">
+            <span class="noor-title">NOOR AL IMAAN</span>
+            <span class="arabic-noor">نور الإيمان</span>
+        </div>
+    </div>
+
+    <!-- Information Fields (Top Half): Bilingual left vs right -->
+    <div class="info-grid">
+        <!-- LEFT SIDE: Afan Oromo + Amharic translation in labels (Afan Oromo primary text + amharic context) -->
+        <div class="left-col">
+            <div class="section-subtitle"><i class="fas fa-language"></i> Afaan Oromo / አማርኛ</div>
+            <div class="field-group">
+                <label>Magaa Guutuu: <span class="lang-badge">Afaan Oromo</span> <span class="lang-badge">ሙሉ ስም</span></label>
+                <input type="text" id="fullName" placeholder="Eg. Ahmad Taha Hussein / አህመድ ታሀ ሁሴን">
+            </div>
+            <div class="field-group">
+                <label>Umrii: <span class="lang-badge">Afaan Oromo</span> <span class="lang-badge">እድሜ</span></label>
+                <input type="number" id="age" placeholder="Jahaa / ዕድሜ">
+            </div>
+            <div class="field-group">
+                <label>Magaalaa: <span class="lang-badge">Afaan Oromo</span> <span class="lang-badge">ከተማ</span></label>
+                <input type="text" id="city" placeholder="Finfinnee / አዲስ አበባ">
+            </div>
+            <div class="field-group">
+                <label>Saala: <span class="lang-badge">Afaan Oromo</span> <span class="lang-badge">ጾታ</span></label>
+                <select id="gender">
+                    <option value="Dhiirraa (Dhiiraa)">Dhiirraa (Dhiiraa) / ወንድ</option>
+                    <option value="Dubartii">Dubartii / ሴት</option>
+                    <option value="Kan biraa">Kan biraa / ሌላ</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Ganda: <span class="lang-badge">Village/District</span> <span class="lang-badge">ወረዳ</span></label>
+                <input type="text" id="village" placeholder="Ganda X, Wereda 03">
+            </div>
+            <div class="field-group">
+                <label>Masjiid: <span class="lang-badge">Mosque</span> <span class="lang-badge">መስጊድ</span></label>
+                <input type="text" id="mosque" placeholder="Masjid Al-Furqaan / መስጊድ አልፉርቃን">
+            </div>
+            <div class="field-group">
+                <label>Telefoon: <span class="lang-badge">Phone</span> <span class="lang-badge">ስልክ</span></label>
+                <input type="tel" id="phone" placeholder="+251 91 123 4567 / +251 91 123 4567">
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: English + Amharic Context (literal same fields but mirrored for clarity) -->
+        <div class="right-col">
+            <div class="section-subtitle"><i class="fas fa-globe"></i> English / Amharic Context</div>
+            <div class="field-group">
+                <label>Full Name (ሙሉ ስም):</label>
+                <input type="text" id="fullNameEn" placeholder="Full name / ሙሉ ስም">
+            </div>
+            <div class="field-group">
+                <label>Age (እድሜ):</label>
+                <input type="number" id="ageEn" placeholder="Years / ዓመት">
+            </div>
+            <div class="field-group">
+                <label>City/Town (ከተማ):</label>
+                <input type="text" id="cityEn" placeholder="e.g., Adama / አዳማ">
+            </div>
+            <div class="field-group">
+                <label>Gender (ጾታ):</label>
+                <select id="genderEn">
+                    <option value="Male / ወንድ">Male / ወንድ</option>
+                    <option value="Female / ሴት">Female / ሴት</option>
+                    <option value="Other / ሌላ">Other / ሌላ</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Village/District (ወረዳ):</label>
+                <input type="text" id="villageEn" placeholder="Wereda / ወረዳ">
+            </div>
+            <div class="field-group">
+                <label>Mosque (መስጊድ):</label>
+                <input type="text" id="mosqueEn" placeholder="Jamaa Masjid / መስጊድ">
+            </div>
+            <div class="field-group">
+                <label>Phone (ስልክ):</label>
+                <input type="tel" id="phoneEn" placeholder="Phone number / ስልክ ቁጥር">
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Header (Haala Hirmaannaa / የተሳትፎ ሁኔታ) -->
+    <div class="participation-header">
+        <div class="section-title">
+            Haala Hirmaannaa <small>(የተሳትፎ ሁኔታ)</small>
+        </div>
+        <div class="inline-hint"><i class="fas fa-hand-peace"></i> Participation Status</div>
+    </div>
+
+    <!-- Checkbox Options Bottom Half (exactly as specified) -->
+    <div class="checkbox-section">
+        <div class="options-grid">
+            <!-- Option 1: Yaadaa (Shuraa) / በሀሳብ (በሹራ) -->
+            <label class="checkbox-card">
+                <input type="checkbox" value="Yaadaa (Shuraa) / በሀሳብ (በሹራ)" class="participOpt">
+                <label>Yaadaa (Shuraa) <span class="trans-hint">በሀሳብ (በሹራ)</span></label>
+            </label>
+            <!-- Option 2: Mallaqaan / በገንዘብ (By Money) -->
+            <label class="checkbox-card">
+                <input type="checkbox" value="Mallaqaan / በገንዘብ" class="participOpt">
+                <label>Mallaqaan <span class="trans-hint">በገንዘብ</span> (By Money)</label>
+            </label>
+            <!-- Option 3: Meeshaalee / የቁሳቁስ ድጋፍ (የማምረት) -->
+            <label class="checkbox-card">
+                <input type="checkbox" value="Meeshaalee / የቁሳቁስ ድጋፍ (የማምረት)" class="participOpt">
+                <label>Meeshaalee <span class="trans-hint">የቁሳቁስ ድጋፍ (ማምረት)</span> <br><span style="font-size:0.7rem;">(Materials/Equipment)</span></label>
+            </label>
+            <!-- Option 4: Dhiyeessii / በአቅርቦት (By Supply/Provision) -->
+            <label class="checkbox-card">
+                <input type="checkbox" value="Dhiyeessii / በአቅርቦት" class="participOpt">
+                <label>Dhiyeessii <span class="trans-hint">በአቅርቦት</span> (Supply)</label>
+            </label>
+            <!-- Option 5: Hundaan / በሁሉም (By All/Everything) -->
+            <label class="checkbox-card">
+                <input type="checkbox" value="Hundaan / በሁሉም" class="participOpt">
+                <label>Hundaan <span class="trans-hint">በሁሉም</span> (By All)</label>
+            </label>
+        </div>
+    </div>
+
+    <!-- Action buttons + live output summary -->
+    <div class="action-buttons">
+        <button id="resetBtn"><i class="fas fa-eraser"></i> አጽዳ / Reset</button>
+        <button id="collectBtn" class="primary"><i class="fas fa-database"></i> መረጃ ሰብስብ / Collect Information</button>
+    </div>
+
+    <!-- dynamic output panel to display collected data -->
+    <div class="output-area" id="outputPanel">
+        📋 ውጤት / Output will appear here after clicking "Collect Information"
+    </div>
+    <footer>
+        <i class="fas fa-mosque"></i> Noor Al Imaan —  نور الإيمان  —  መረጃ ሰብሳቢ መድረክ
+    </footer>
+</div>
+
+<script>
+    (function() {
+        // Initialize Supabase
+        const { createClient } = supabase;
+        const supabaseClient = createClient(
+            'https://khghiyvahojawixjmlsv.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoZ2hpeXZhaG9qYXdpeGptbHN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODAwMjIsImV4cCI6MjA5Mzc1NjAyMn0.0Kmq-WhSWSGx_IjX3wjWW5rhfxYBx87d-zANNNJWzbA'
+        );
+
+        // Gather all input fields from both columns
+        const leftFull = document.getElementById('fullName');
+        const leftAge = document.getElementById('age');
+        const leftCity = document.getElementById('city');
+        const leftGender = document.getElementById('gender');
+        const leftVillage = document.getElementById('village');
+        const leftMosque = document.getElementById('mosque');
+        const leftPhone = document.getElementById('phone');
+
+        const rightFull = document.getElementById('fullNameEn');
+        const rightAge = document.getElementById('ageEn');
+        const rightCity = document.getElementById('cityEn');
+        const rightGender = document.getElementById('genderEn');
+        const rightVillage = document.getElementById('villageEn');
+        const rightMosque = document.getElementById('mosqueEn');
+        const rightPhone = document.getElementById('phoneEn');
+
+        // checkboxes list
+        const checkboxes = document.querySelectorAll('.participOpt');
+
+        // utility: sync main fields from left to right if left is primary? Actually we design collector using both but compilation will merge in smart way
+        // Provide integrated collection: Both sides may contain same info, we will prefer left OR if left empty then right, but better show both in output to fulfill bilingual nature.
+        // The requirement: Left side primarily Afan Oromo, right side English/Amharic. The collector will gather both.
+        
+        function resetForm() {
+            // left side fields
+            leftFull.value = '';
+            leftAge.value = '';
+            leftCity.value = '';
+            leftGender.selectedIndex = 0;
+            leftVillage.value = '';
+            leftMosque.value = '';
+            leftPhone.value = '';
+            // right side fields
+            rightFull.value = '';
+            rightAge.value = '';
+            rightCity.value = '';
+            rightGender.selectedIndex = 0;
+            rightVillage.value = '';
+            rightMosque.value = '';
+            rightPhone.value = '';
+            // uncheck all checkboxes
+            checkboxes.forEach(cb => cb.checked = false);
+            document.getElementById('outputPanel').innerHTML = '✨ ቅጹ ተጠርጓል / Form reset. Enter new data.';
+        }
+
+        // function to collect and display structured info
+        function collectInformation() {
+            // collect left values (Afan Oromo / Amharic oriented)
+            const fullNameAfaan = leftFull.value.trim() || '(Not provided)';
+            const ageAfaan = leftAge.value.trim() || '—';
+            const cityAfaan = leftCity.value.trim() || '—';
+            const genderAfaan = leftGender.options[leftGender.selectedIndex]?.text || '—';
+            const villageAfaan = leftVillage.value.trim() || '—';
+            const mosqueAfaan = leftMosque.value.trim() || '—';
+            const phoneAfaan = leftPhone.value.trim() || '—';
+
+            // collect right values (English / Amharic context)
+            const fullNameEng = rightFull.value.trim() || '(Not provided)';
+            const ageEng = rightAge.value.trim() || '—';
+            const cityEng = rightCity.value.trim() || '—';
+            const genderEng = rightGender.options[rightGender.selectedIndex]?.text || '—';
+            const villageEng = rightVillage.value.trim() || '—';
+            const mosqueEng = rightMosque.value.trim() || '—';
+            const phoneEng = rightPhone.value.trim() || '—';
+
+            // gather selected participation options
+            const selectedParticipation = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedParticipation.push(cb.value);
+                }
+            });
+            const participationText = selectedParticipation.length ? selectedParticipation.join(', ') : 'ምንም አልተመረጠም / None selected';
+
+            // Build nice formatted bilingual output respecting Afan Oromo + Amharic & English context
+            let output = "═ ✦ معلومات التسجيل ✦ ═\n";
+            output += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            output += "🔹 LEFT SIDE (Afaan Oromo / አማርኛ):\n";
+            output += `   • Magaa Guutuu (ሙሉ ስም): ${fullNameAfaan}\n`;
+            output += `   • Umrii (እድሜ): ${ageAfaan}\n`;
+            output += `   • Magaalaa (ከተማ): ${cityAfaan}\n`;
+            output += `   • Saala (ጾታ): ${genderAfaan}\n`;
+            output += `   • Ganda / Wereda (ወረዳ): ${villageAfaan}\n`;
+            output += `   • Masjiid (መስጊድ): ${mosqueAfaan}\n`;
+            output += `   • Telefoon (ስልክ): ${phoneAfaan}\n`;
+            output += "\n🔸 RIGHT SIDE (English / Amharic Context):\n";
+            output += `   • Full Name (ሙሉ ስም): ${fullNameEng}\n`;
+            output += `   • Age (እድሜ): ${ageEng}\n`;
+            output += `   • City/Town (ከተማ): ${cityEng}\n`;
+            output += `   • Gender (ጾታ): ${genderEng}\n`;
+            output += `   • Village/District (ወረዳ): ${villageEng}\n`;
+            output += `   • Mosque (መስጊድ): ${mosqueEng}\n`;
+            output += `   • Phone (ስልክ): ${phoneEng}\n`;
+            output += "\n📌 Haala Hirmaannaa (የተሳትፎ ሁኔታ) - Participation Status:\n";
+            output += `   ✓ ${participationText}\n`;
+            output += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            output += `🌙 NOOR AL IMAAN | نور الإيمان  | መረጃ በትክክል ተሰብስቧል\n`;
+
+            // Additionally show a clean HTML break in the output div
+            const outputDiv = document.getElementById('outputPanel');
+            outputDiv.innerHTML = `<pre style="font-family: 'Inter', monospace; margin:0; white-space:pre-wrap; word-break:break-word;">${escapeHtml(output)}</pre>`;
+
+            // Save to Supabase
+            saveToSupabase();
+        }
+
+        // Function to save data to Supabase
+        async function saveToSupabase() {
+            try {
+                // Prepare data for Supabase
+                const participationData = {
+                    participation_idea: false,
+                    participation_money: false,
+                    participation_material: false,
+                    participation_provision: false,
+                    participation_all: false
+                };
+
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        if (cb.value.includes('Yaadaa')) participationData.participation_idea = true;
+                        if (cb.value.includes('Mallaqaan')) participationData.participation_money = true;
+                        if (cb.value.includes('Meeshaalee')) participationData.participation_material = true;
+                        if (cb.value.includes('Dhiyeessii')) participationData.participation_provision = true;
+                        if (cb.value.includes('Hundaan')) participationData.participation_all = true;
+                    }
+                });
+
+                const submissionData = {
+                    // Afan Oromo/Amharic data
+                    full_name_oromo: leftFull.value.trim() || null,
+                    age_oromo: parseInt(leftAge.value) || null,
+                    city_oromo: leftCity.value.trim() || null,
+                    gender_oromo: leftGender.options[leftGender.selectedIndex]?.text || null,
+                    village_oromo: leftVillage.value.trim() || null,
+                    mosque_oromo: leftMosque.value.trim() || null,
+                    phone_oromo: leftPhone.value.trim() || null,
+                    
+                    // English/Amharic data
+                    full_name_english: rightFull.value.trim() || null,
+                    age_english: parseInt(rightAge.value) || null,
+                    city_english: rightCity.value.trim() || null,
+                    gender_english: rightGender.options[rightGender.selectedIndex]?.text || null,
+                    village_english: rightVillage.value.trim() || null,
+                    mosque_english: rightMosque.value.trim() || null,
+                    phone_english: rightPhone.value.trim() || null,
+                    
+                    // Participation options
+                    ...participationData
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('user_registrations')
+                    .insert([submissionData]);
+
+                if (error) {
+                    console.error('Supabase error:', error);
+                    // Show error message in output panel
+                    const outputDiv = document.getElementById('outputPanel');
+                    outputDiv.innerHTML += `<br><br><span style="color: red;">❌ Error saving to database: ${error.message}</span>`;
+                } else {
+                    console.log('Data saved successfully:', data);
+                    // Show success message in output panel
+                    const outputDiv = document.getElementById('outputPanel');
+                    outputDiv.innerHTML += `<br><br><span style="color: green;">✅ Data saved successfully to database!</span>`;
+                }
+            } catch (error) {
+                console.error('Error saving to Supabase:', error);
+                const outputDiv = document.getElementById('outputPanel');
+                outputDiv.innerHTML += `<br><br><span style="color: red;">❌ Network error: Could not save to database</span>`;
+            }
+        }
+
+        // simple helper to avoid XSS
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+
+        // Optional sync: auto-fill from left to right for convenience? Not mandatory but helps user experience but don't override full bilingual requirement.
+        // We don't auto-sync to let users deliberately input both languages. But we leave fields independent.
+
+        // Additional: In case the left and right represent same person but allow both cultural representations.
+        // Add small note for submit event
+        const collectBtn = document.getElementById('collectBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        collectBtn.addEventListener('click', collectInformation);
+        resetBtn.addEventListener('click', resetForm);
+
+        // Preload placeholder example for demonstration (not mandatory but neat)
+        setTimeout(() => {
+            if(leftFull.value === '') {
+                // optional demo example data (not intrusive)
+                // leftFull.placeholder = "Obbo Jaalalaa / ኦቦ ጃላላ";
+            }
+        }, 100);
+    })();
+</script>
+</body>
+</html>

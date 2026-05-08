@@ -1,0 +1,41 @@
+/* Global styles and fonts */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.font-ethiopic {
+  font-family: 'Noto Sans Ethiopic', sans-serif;
+}
+
+.font-arabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+
+.font-latin {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 15px;
+  }
+}
