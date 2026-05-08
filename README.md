@@ -1,10 +1,10 @@
 # Noor Al Imaan Registration System
 
 ## 🌙 About
-A comprehensive bilingual registration system for Noor Al Imaan community, supporting Afaan Oromo, Amharic, English, and Arabic languages.
+A comprehensive bilingual registration system for Noor Al Imaan community, supporting Afan Oromo, Amharic, English, and Arabic languages.
 
 ## 🚀 Features
-- **Bilingual Forms**: Dual input fields for Afaan Oromo/Amharic and English
+- **Bilingual Forms**: Dual input fields for Afan Oromo/Amharic and English
 - **Participation Tracking**: Multiple support options (ideas, financial, materials, provisions)
 - **Modern Design**: Responsive layout with professional styling
 - **Database Integration**: Complete Supabase backend integration
