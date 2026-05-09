@@ -438,6 +438,49 @@
         </div>
     </div>
 
+    <!-- Interactive Sections -->
+    <!-- Comment section (shown when Yaadaa is checked) -->
+    <div id="commentSection" class="interactive-section" style="display:none; background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 1rem; margin: 2rem 0;">
+        <h3 style="color: #1e3c72; margin-bottom: 1rem;"><i class="fas fa-comment"></i> Yaadaa Keessan (የእርስዎ አስተያየት) — Your Comment</h3>
+        <textarea id="commentInput" placeholder="Yaadaa keessan barreessaa... (አስተያየትዎን ይፃፉ...)" style="width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 0.75rem; font-size: 1rem; min-height: 120px; resize: vertical;"></textarea>
+    </div>
+
+    <!-- Donation section (shown when Mallaqaan is checked) -->
+    <div id="donationSection" class="interactive-section" style="display:none; background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 1rem; margin: 2rem 0;">
+        <h3 style="color: #1e3c72; margin-bottom: 1rem;"><i class="fas fa-hand-holding-usd"></i> Mallaqaan (በገንዘብ) — Donation</h3>
+        <div style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <p style="margin-bottom: 1rem; color: #374151;">Gatii filadhaa (የሚሰጡትን መጠን ይምረጡ):</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <button type="button" class="amount-btn" data-amount="100" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">100 ETB</button>
+                <button type="button" class="amount-btn" data-amount="200" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">200 ETB</button>
+                <button type="button" class="amount-btn" data-amount="500" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">500 ETB</button>
+                <button type="button" class="amount-btn" data-amount="1000" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">1000 ETB</button>
+                <button type="button" class="amount-btn" data-amount="2000" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">2000 ETB</button>
+                <button type="button" class="amount-btn" data-amount="5000" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">5000 ETB</button>
+                <button type="button" class="amount-btn" data-amount="10000" style="padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">10000 ETB</button>
+            </div>
+            <div id="bankInfo" style="background: #f8f9fa; padding: 1rem; border-radius: 1rem; margin: 1rem 0; border-left: 4px solid #28a745;">
+                <p style="margin: 0.5rem 0;"><strong>Bank:</strong> Commercial Bank of Ethiopia (CBE)</p>
+                <p style="margin: 0.5rem 0;"><strong>Account:</strong> 1000745191178</p>
+                <p style="margin: 0.5rem 0;"><strong>Telegram:</strong> <a href="https://t.me/MAH_ZAK1" target="_blank">@MAH_ZAK1</a></p>
+            </div>
+            <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Please send payment screenshot to Telegram after transfer.</p>
+        </div>
+    </div>
+
+    <!-- Materials section (shown when Meeshaalee is checked) -->
+    <div id="materialsSection" class="interactive-section" style="display:none; background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 1rem; margin: 2rem 0;">
+        <h3 style="color: #1e3c72; margin-bottom: 1rem;"><i class="fas fa-boxes"></i> Meeshaalee (የቁሳቁስ ድጋፍ) — Materials</h3>
+        <div id="materialsList" style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div class="material-item" style="background: rgba(249,250,251,0.1); padding: 1.5rem; border-radius: 1rem; margin-bottom: 1rem; border: 1px solid #e5e7eb;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151;">Meeshaa 1 (ዕቃ 1)</label>
+                <input type="text" class="material-name" placeholder="Maqaa meeshaa (የዕቃው ስም)" style="width: 100%; padding: 0.8rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <input type="text" class="material-qty" placeholder="Hamma (ብዛት)" style="width: 100%; padding: 0.8rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.9rem;">
+            </div>
+        </div>
+        <button type="button" id="addMaterialBtn" style="margin-top: 1rem; background: #1e3c72; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 1rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;"><i class="fas fa-plus"></i> Meeshaa Dabalaa (ዕቃ ያክሉ)</button>
+    </div>
+
     <!-- Action buttons + live output summary -->
     <div class="action-buttons">
         <button id="resetBtn"><i class="fas fa-eraser"></i> አጽዳ / Reset</button>
@@ -481,6 +524,54 @@
 
         // checkboxes list
         const checkboxes = document.querySelectorAll('.participOpt');
+
+        // Interactive sections
+        const commentSection = document.getElementById('commentSection');
+        const donationSection = document.getElementById('donationSection');
+        const materialsSection = document.getElementById('materialsSection');
+        const commentInput = document.getElementById('commentInput');
+        const materialsList = document.getElementById('materialsList');
+        const addMaterialBtn = document.getElementById('addMaterialBtn');
+
+        // Toggle interactive sections based on checkbox selection
+        function toggleInteractiveSections() {
+            let showComment = false;
+            let showDonation = false;
+            let showMaterials = false;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    if (cb.value.includes('Yaadaa')) showComment = true;
+                    if (cb.value.includes('Mallaqaan')) showDonation = true;
+                    if (cb.value.includes('Meeshaalee')) showMaterials = true;
+                }
+            });
+
+            commentSection.style.display = showComment ? 'block' : 'none';
+            donationSection.style.display = showDonation ? 'block' : 'none';
+            materialsSection.style.display = showMaterials ? 'block' : 'none';
+        }
+
+        // Attach toggle handler to all checkboxes
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', toggleInteractiveSections);
+        });
+
+        // Add material item
+        if (addMaterialBtn) {
+            addMaterialBtn.addEventListener('click', function() {
+                const count = materialsList.querySelectorAll('.material-item').length + 1;
+                const newItem = document.createElement('div');
+                newItem.className = 'material-item';
+                newItem.style.cssText = 'background: rgba(249,250,251,0.1); padding: 1.5rem; border-radius: 1rem; margin-bottom: 1rem; border: 1px solid #e5e7eb;';
+                newItem.innerHTML = `
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151;">Meeshaa ${count} (ዕቃ ${count})</label>
+                    <input type="text" class="material-name" placeholder="Maqaa meeshaa (የዕቃው ስም)" style="width: 100%; padding: 0.8rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    <input type="text" class="material-qty" placeholder="Hamma (ብዛት)" style="width: 100%; padding: 0.8rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.9rem;">
+                `;
+                materialsList.appendChild(newItem);
+            });
+        }
 
         // utility: sync main fields from left to right if left is primary? Actually we design collector using both but compilation will merge in smart way
         // Provide integrated collection: Both sides may contain same info, we will prefer left OR if left empty then right, but better show both in output to fulfill bilingual nature.
