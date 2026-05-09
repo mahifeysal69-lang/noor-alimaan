@@ -991,7 +991,6 @@ export default function Home() {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border-radius: 50%;
           }
           
           .logo-fallback {
@@ -1004,7 +1003,6 @@ export default function Home() {
             align-items: center;
             justify-content: center;
             background: #f8f9fa;
-            border-radius: 50%;
             font-size: 2rem;
             color: #1e3c72;
           }
